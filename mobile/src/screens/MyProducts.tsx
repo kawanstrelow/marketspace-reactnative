@@ -1,10 +1,10 @@
 import { Box, Text } from "native-base";
 
 
-export default function MyAds() {
+export default function MyProducts() {
     return (
         <Box>
-            <Text>Home</Text>
+            <Text>MyProducts</Text>
         </Box>
     )
 }

@@ -5,11 +5,13 @@ import { View, Text, useTheme, Icon } from "native-base";
 import { House, Tag, SignOut } from 'phosphor-react-native';
 
 import Home from "@screens/Home";
-import MyAds from "@screens/MyAds";
+import MyProducts from "@screens/MyProducts";
+import Product from "@screens/Product";
 
 type AppRoutes = {
     Home: undefined;
-    MyAds: undefined;
+    MyProducts: undefined;
+    Product: undefined;
     SignOut: undefined;
 }
 
@@ -47,8 +49,17 @@ export function AppRoutes() {
             />
 
             <Screen 
-                name='MyAds'
-                component={MyAds}
+                name='Product'
+                component={Product}
+                options = {{
+                    tabBarButton: () => null,
+                    tabBarStyle: { display: 'none'}
+                }}
+            />
+                
+            <Screen 
+                name='MyProducts'
+                component={MyProducts}
                 options={{
                     tabBarIcon: ({ color }) => (
                         <Tag color={color} weight="regular" size={24}/>
@@ -58,7 +69,7 @@ export function AppRoutes() {
 
             <Screen 
                 name='SignOut'
-                component={MyAds}
+                component={MyProducts}
                 options={{
                     tabBarIcon: ({ color }) => (
                         <SignOut color={color} weight="regular" size={24}/>
