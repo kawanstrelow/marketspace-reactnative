@@ -42,7 +42,7 @@ export function SignUp() {
                 px={12}
             >
                 <Center>
-
+                    
                     <Image 
                         source={LogoImgSignUp}
                         defaultSource={LogoImgSignUp}
