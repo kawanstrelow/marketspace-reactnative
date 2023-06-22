@@ -9,6 +9,7 @@ import { Input } from '@components/Input'
 import { Button } from '@components/Button'
 
 import { AuthNavigationRoutesProps } from '@routes/auth.routes'
+import { Plus } from 'phosphor-react-native'
 
 type FormData = {
     email: string;

@@ -1,15 +1,18 @@
 
 
-import { Button, Box, FlatList, HStack, Heading, Image, ScrollView, SectionList, Text, VStack, View, useTheme } from "native-base";
+import { Box, FlatList, HStack, Heading, Image, ScrollView, SectionList, Text, VStack, View, useTheme, Pressable } from "native-base";
 import { Controller, useForm } from 'react-hook-form'
+import { useNavigation } from "@react-navigation/native";
 
-import { House, Tag, SignOut, ArrowRight, ArrowLeft, Barcode, QrCode, Money, CreditCard, Bank, WhatsappLogo } from 'phosphor-react-native';
+import { House, Tag, SignOut, ArrowRight, ArrowLeft, Barcode, QrCode, Money, CreditCard, Bank, WhatsappLogo, Plus, Power, Trash, Pencil } from 'phosphor-react-native';
 
 import AvatarImg from '@assets/avatarimg.png'
 import TenisImg from '@assets/tenis.png'
 
 import { Input } from "@components/Input";
 import ProductBox from "@components/ProductBox";
+import { Button } from "@components/Button";
+
 import { useState } from "react";
 
 import { ProductDTO } from "@dtos/ProductDTO";
@@ -38,22 +41,72 @@ const productsExample = [
     
 ]
 
-export default function Product() {
+type Props = {
+    data: ProductDTO
+}
+
+export default function Product({ data }: Props) {
 
     const { colors } = useTheme()
 
+    const navigate = useNavigation()
+
+    function handleBackHome() {
+        navigate.goBack()
+    }
+
+    const isTheSameUser = true
+    const isActive = false
+    const opacity = isActive ? 1 : 0.7
+
     return (
-        <VStack pt={16} >
-            <HStack mb={3} px={6}>
-                <ArrowLeft size={24} color={colors.gray[100]} />
+        <VStack pt={16} h='100%'>
+            <HStack mb={3} px={6} justifyContent='space-between'>
+                <Pressable onPress={handleBackHome} >
+                    <ArrowLeft size={24} color={colors.gray[100]} />
+                    
+                </Pressable>
+                
+                {
+                    isTheSameUser && (
+                        <Pressable onPress={handleBackHome}>
+                            <Pencil size={24} color={colors.gray[100]} />
+                        </Pressable>
+                    )
+                }
+                
+                
             </HStack>
-            <Image 
-                source={TenisImg}
-                defaultSource={TenisImg}
-                alt='Item'
+            <View 
                 w='100%'
                 h='280px'
-            />
+                bgColor={colors.gray[100]}
+                alignItems='center'
+                justifyContent='center'
+            >
+                
+                <Image 
+                    source={TenisImg}
+                    defaultSource={TenisImg}
+                    alt='Item'
+                    w='100%'
+                    h='280px'
+                    opacity={opacity}
+                />
+
+                <Heading 
+                    textAlign='center' 
+                    textTransform='uppercase' 
+                    fontFamily='heading'
+                    color='white' 
+                    fontSize='sm'
+                    position='absolute'
+
+                >
+                    Anúncio desativado
+                </Heading>
+            </View>
+            
             <VStack px={6} mt={5}>
                 <HStack alignItems='center' mb={6}>
                     <Image 
@@ -113,26 +166,81 @@ export default function Product() {
                         <Text fontSize='sm' color='gray.200' ml={2}>Depósito Bancário</Text>
                     </HStack>
                 </VStack>
-
-                <HStack alignItems='center' justifyContent='space-between'>
-                    <Heading color='blue.200' fontSize='xl' bg={'amber.200'} fontFamily='heading' >
-                        <Heading color='blue.200' fontSize='sm' fontFamily='heading'>R$</Heading>
-                        120,00
-                    </Heading>
-                    <Button
-                        bgColor='blue.200'
-                        h='42px'
-                        p={3}
-                        alignItems='center'
-                        borderRadius={6}
-                    >
-                        <HStack alignItems='center'>
-                            <WhatsappLogo size={16} color={colors.gray[600]} />
-                            <Heading fontFamily='heading' color='gray.700' fontSize='sm' ml={2}>Entrar em contato</Heading>
-                        </HStack>
-                    </Button>
-                </HStack>
+                
+                { isTheSameUser && isActive ? (
+                    <VStack>
+                        <Button 
+                            title="Desativar anúncio"
+                            mb={2}
+                        >
+                            <Power size={16} color={colors.gray[600]} />
+                        </Button>
+                        <Button 
+                            title="Excluir anúncio"
+                            variant='gray-light'
+                        >
+                            <Trash size={16} color={colors.gray[300]} />
+                        </Button>
+                    </VStack>
+                    ) 
+                : isTheSameUser && !isActive ? (
+                    <VStack>
+                        <Button 
+                            title="Reativar anúncio"
+                            variant='blue'
+                            mb={2}
+                        >
+                            <Power size={16} color={colors.gray[600]} />
+                        </Button>
+                        <Button 
+                            title="Excluir anúncio"
+                            variant='gray-light'
+                        >
+                            <Trash size={16} color={colors.gray[300]} />
+                        </Button>
+                    </VStack>
+                ) : null
+            }
+                
             </VStack>
+               
+          
+           {
+             !isTheSameUser && (
+                <HStack 
+                    alignItems='center' 
+                    justifyContent='space-between' 
+                    bgColor='gray.700' 
+                    mb={0} mt='auto' 
+                    w='full' 
+                    position='absolute' 
+                    bottom={0}
+                    px={6}
+                    pb={7}
+                    pt={5}
+                >
+                 <HStack alignItems='baseline'>
+                    <Heading color='blue.200' fontSize='sm' fontFamily='heading'>R$</Heading>
+                    <Heading color='blue.200' fontSize='xl' fontFamily='heading'>120,00</Heading>
+                 </HStack>
+                 
+                 <Button
+                    title="Entrar em contato"
+                    bgColor='blue.200'
+                    w='170px'
+                    h='42px'
+                    p={3}
+                    alignItems='center'
+                    borderRadius={6}
+                 >
+                    <WhatsappLogo size={16} color={colors.gray[600]} />
+                 </Button>
+                </HStack>
+             )
+           }
+           
+           
+           
             
         </VStack>
     )

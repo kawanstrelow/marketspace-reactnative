@@ -1,7 +1,7 @@
 import { Box, FlatList, HStack, Heading, Image, ScrollView, SectionList, Text, VStack, useTheme } from "native-base";
 import { Controller, useForm } from 'react-hook-form'
 
-import { House, Tag, SignOut, ArrowRight } from 'phosphor-react-native';
+import { House, Tag, SignOut, ArrowRight, Plus } from 'phosphor-react-native';
 
 import AvatarImg from '@assets/avatarimg.png'
 
@@ -194,7 +194,9 @@ export default function Home() {
                 <Button 
                     title="Criar anúncio"
                     flex={1}
-                />
+                >
+                    <Plus size={16} color={colors.gray[600]} />
+                </Button>
             </HStack>
 
             <Text color='gray.300' fontSize='sm' mb={3}>
@@ -258,21 +260,19 @@ export default function Home() {
 
             <Box>
 
+                <FilterInput
+                    placeholder='Buscar anúncio'
+                    autoCapitalize='none'
+                />
                 
-                    <FilterInput
-                        placeholder='Buscar anúncio'
-                        autoCapitalize='none'
-                    />
-                 
-                
-                    <FlatList 
-                        data={products}
-                        renderItem={({item}) => (
-                            <ProductBox />
-                        )}
-                        columnWrapperStyle={{justifyContent: 'space-between'}}
-                        numColumns={2}
-                    />
+                <FlatList 
+                    data={products}
+                    renderItem={({item}) => (
+                        <ProductBox data={item} />
+                    )}
+                    columnWrapperStyle={{justifyContent: 'space-between'}}
+                    numColumns={2}
+                />
 
             </Box>
         </VStack>
