@@ -7,12 +7,17 @@ import { House, Tag, SignOut } from 'phosphor-react-native';
 import Home from "@screens/Home";
 import MyProducts from "@screens/MyProducts";
 import Product from "@screens/Product";
+import CreateAd from "@screens/CreateAd";
+import { ProductDTO } from "@dtos/ProductDTO";
+import CreateAdPreview from "@screens/CreateAdPreview";
 
 type AppRoutes = {
     Home: undefined;
     MyProducts: undefined;
-    Product: undefined;
+    Product: { data: ProductDTO };
     SignOut: undefined;
+    CreateAd: undefined;
+    CreateAdPreview: undefined;
 }
 
 export type AppNavigatorRoutesProps = BottomTabNavigationProp<AppRoutes>;
@@ -69,13 +74,32 @@ export function AppRoutes() {
 
             <Screen 
                 name='SignOut'
-                component={MyProducts}
+                component={Home}
                 options={{
                     tabBarIcon: ({ color }) => (
                         <SignOut color={color} weight="regular" size={24}/>
                     )
                 }}
             />
+
+            <Screen 
+                name='CreateAd'
+                component={CreateAd}
+                options = {{
+                    tabBarButton: () => null,
+                    tabBarStyle: { display: 'none'}
+                }}
+            />
+
+            <Screen 
+                name='CreateAdPreview'
+                component={CreateAdPreview}
+                options = {{
+                    tabBarButton: () => null,
+                    tabBarStyle: { display: 'none'}
+                }}
+            />
+
             
         </Navigator>
         

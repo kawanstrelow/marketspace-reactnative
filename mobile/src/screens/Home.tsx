@@ -1,17 +1,19 @@
-import { Box, FlatList, HStack, Heading, Image, ScrollView, SectionList, Text, VStack, useTheme } from "native-base";
-import { Controller, useForm } from 'react-hook-form'
+import { Box, FlatList, HStack, Heading, Image, Text, VStack, useTheme } from "native-base";
+import { useForm } from 'react-hook-form'
 
-import { House, Tag, SignOut, ArrowRight, Plus } from 'phosphor-react-native';
+import { Tag, ArrowRight, Plus } from 'phosphor-react-native';
 
 import AvatarImg from '@assets/avatarimg.png'
 
 import { Button } from "@components/Button";
-import { Input } from "@components/Input";
 import ProductBox from "@components/ProductBox";
 import { useState } from "react";
 
 import { ProductDTO } from "@dtos/ProductDTO";
 import { FilterInput } from "@components/FilterInput";
+import { useNavigation } from "@react-navigation/native";
+import { AppNavigatorRoutesProps } from "@routes/app.routes";
+
 
 const productsExample = [
     {
@@ -173,8 +175,13 @@ export default function Home() {
     const [ products, setProducts ] = useState<ProductDTO[]>(productsExample)
 
     const { colors } = useTheme()
+    const navigation = useNavigation<AppNavigatorRoutesProps>()
 
     const { control, handleSubmit, formState: { errors } } = useForm<FormData>()
+
+    function handleCreateNewAd() {
+        navigation.navigate('CreateAd')
+    }
 
     return (
         <VStack pt={16} px={6}>
@@ -194,6 +201,7 @@ export default function Home() {
                 <Button 
                     title="Criar anúncio"
                     flex={1}
+                    onPress={handleCreateNewAd}
                 >
                     <Plus size={16} color={colors.gray[600]} />
                 </Button>

@@ -21,8 +21,10 @@ export default function ProductBox({ data, showAvatar = true }: Props) {
     const navigation = useNavigation<AppNavigatorRoutesProps>()
 
     function handleNavigateToProductDetails() {
-        navigation.navigate('Product')
+        navigation.navigate('Product', { data })
     }
+
+    
 
     const opacity = is_active ? 1 : 0.7
 

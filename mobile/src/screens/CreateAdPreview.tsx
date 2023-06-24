@@ -1,6 +1,6 @@
 
 
-import { Box, FlatList, HStack, Heading, Image, ScrollView, SectionList, Text, VStack, View, useTheme, Pressable } from "native-base";
+import { Box, FlatList, HStack, Heading, Image, ScrollView, SectionList, Text, VStack, View, useTheme, Pressable, Center } from "native-base";
 import { Controller, useForm } from 'react-hook-form'
 import { useNavigation, useRoute } from "@react-navigation/native";
 
@@ -45,7 +45,7 @@ type RouteParamsProps = {
     data: ProductDTO
 }
 
-export default function Product() {
+export default function CreateAdPreview() {
 
     const { colors } = useTheme()
 
@@ -56,34 +56,35 @@ export default function Product() {
         navigation.goBack()
     }
 
-    const { } = route.params as RouteParamsProps
-
-    const isTheSameUser = true
-    const isActive = false
-    const opacity = isActive ? 1 : 0.7
+    // const { } = route.params as RouteParamsProps
 
     return (
-        <VStack pt={16} h='100%'>
-            <HStack mb={3} px={6} justifyContent='space-between'>
-                <Pressable onPress={handleBackHome} >
-                    <ArrowLeft size={24} color={colors.gray[100]} />
-                    
-                </Pressable>
+        <VStack h='full'>
+            <VStack 
+                bg='blue.200'
+                pt={16}
+                pb={4}
+                 
+                px={6} 
+                justifyContent='space-between'
+            >
+                <Center>
+                    <Heading
+                        color='gray.700'
+                        fontFamily='heading'
+                        fontSize='md'
+                    >Pré visualização do anúncio</Heading>
+                    <Text
+                        color='gray.700'
+                        fontSize='sm'
+                    >É assim que seu produto vai aparecer!</Text>
+                </Center>
                 
-                {
-                    isTheSameUser && (
-                        <Pressable onPress={handleBackHome}>
-                            <Pencil size={24} color={colors.gray[100]} />
-                        </Pressable>
-                    )
-                }
                 
-                
-            </HStack>
+            </VStack>
             <View 
                 w='100%'
                 h='280px'
-                bgColor={colors.gray[100]}
                 alignItems='center'
                 justifyContent='center'
             >
@@ -94,22 +95,8 @@ export default function Product() {
                     alt='Item'
                     w='100%'
                     h='280px'
-                    opacity={opacity}
                 />
 
-                { !isActive && (
-                    <Heading 
-                    textAlign='center' 
-                    textTransform='uppercase' 
-                    fontFamily='heading'
-                    color='white' 
-                    fontSize='sm'
-                    position='absolute'
-                    >
-                        Anúncio desativado
-                    </Heading>
-                    )
-                }
             </View>
             
             <VStack px={6} mt={5}>
@@ -172,81 +159,45 @@ export default function Product() {
                     </HStack>
                 </VStack>
                 
-                { isTheSameUser && isActive ? (
-                    <VStack>
-                        <Button 
-                            title="Desativar anúncio"
-                            mb={2}
-                        >
-                            <Power size={16} color={colors.gray[600]} />
-                        </Button>
-                        <Button 
-                            title="Excluir anúncio"
-                            variant='gray-light'
-                        >
-                            <Trash size={16} color={colors.gray[300]} />
-                        </Button>
-                    </VStack>
-                    ) 
-                : isTheSameUser && !isActive ? (
-                    <VStack>
-                        <Button 
-                            title="Reativar anúncio"
-                            variant='blue'
-                            mb={2}
-                        >
-                            <Power size={16} color={colors.gray[600]} />
-                        </Button>
-                        <Button 
-                            title="Excluir anúncio"
-                            variant='gray-light'
-                        >
-                            <Trash size={16} color={colors.gray[300]} />
-                        </Button>
-                    </VStack>
-                ) : null
-            }
+            
+        
                 
             </VStack>
-               
-          
-           {
-             !isTheSameUser && (
-                <HStack 
-                    alignItems='center' 
-                    justifyContent='space-between' 
-                    bgColor='gray.700' 
-                    mb={0} mt='auto' 
-                    w='full' 
-                    position='absolute' 
-                    bottom={0}
-                    px={6}
-                    pb={7}
-                    pt={5}
-                >
-                 <HStack alignItems='baseline'>
-                    <Heading color='blue.200' fontSize='sm' fontFamily='heading'>R$</Heading>
-                    <Heading color='blue.200' fontSize='xl' fontFamily='heading'>120,00</Heading>
-                 </HStack>
-                 
-                 <Button
-                    title="Entrar em contato"
-                    bgColor='blue.200'
-                    w='170px'
-                    h='42px'
-                    p={3}
-                    alignItems='center'
-                    borderRadius={6}
-                 >
-                    <WhatsappLogo size={16} color={colors.gray[600]} />
-                 </Button>
-                </HStack>
-             )
-           }
-           
-           
-           
-            
+
+            <HStack 
+                alignItems='center' 
+                justifyContent='space-between' 
+                bgColor='gray.700' 
+                mb={0} mt='auto' 
+                w='full' 
+                position='absolute' 
+                bottom={0}
+                px={6}
+                pb={7}
+                pt={5}
+            >
+                        <Button 
+                            variant="gray-light"
+                            title="Voltar e editar"
+                            w='48%'
+                            h='42px'
+                            borderRadius={6}
+                            p={0}
+                        >
+                            <ArrowLeft size={16} color={colors.gray[200]} />
+                        </Button>
+                        <Button 
+                            variant="blue"
+                            title="Publicar"
+                            // onPress={}
+                            w='48%'
+                            h='42px'
+                            borderRadius={6}
+                            p={0}
+                        >
+                            <Tag size={16} color={colors.gray[600]} />   
+                        </Button>
+            </HStack> 
         </VStack>
     )
 }

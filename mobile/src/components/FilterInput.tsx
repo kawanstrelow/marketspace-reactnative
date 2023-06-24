@@ -1,10 +1,11 @@
-import { Button as NativeBaseButton, Input as NativeBaseInput, IInputProps, FormControl, Pressable, Icon, HStack, useTheme, Text, Modal, Heading, Checkbox, CircleIcon, Switch } from "native-base";
+import { Button as NativeBaseButton, Input as NativeBaseInput, IInputProps, FormControl, Pressable, Icon, HStack, useTheme, Text, Modal, Heading, CircleIcon, Switch, Checkbox } from "native-base";
 
-import { MagnifyingGlass, Sliders } from 'phosphor-react-native';
+import { MagnifyingGlass, Sliders, XCircle } from 'phosphor-react-native';
 import { useState } from "react";
 import { Input } from "./Input";
 import { useForm, Controller} from "react-hook-form";
 import { Button } from "./Button";
+import { LogBox } from "react-native";
 
 
 type Props = IInputProps & {
@@ -13,16 +14,24 @@ type Props = IInputProps & {
 
 type FormData = {
     name: string;
+    is_new: boolean;
+    accept_trade: boolean;
     payment_methods: string[];
 }
 
+type paymentMethods = string[];
+
 export function FilterInput({ errorMessage = null, isInvalid, ...rest}: Props) {
+
+    LogBox.ignoreLogs([
+        'We can not support a function callback. See Github Issues for details https://github.com/adobe/react-spectrum/issues/2320',
+    ]);
 
     const theme = useTheme()
 
     const [showFilters, setShowFilters] = useState(false);
-
-    const { control, handleSubmit, formState: { errors } } = useForm<FormData>()
+    const [filterSettings, setFilterSettings] = useState<FormData>({} as FormData)
+    const [paymentMethods, setPaymentMethods] = useState<paymentMethods>([])
 
     const invalid = !!errorMessage || isInvalid
 
@@ -35,14 +44,34 @@ export function FilterInput({ errorMessage = null, isInvalid, ...rest}: Props) {
         console.log('apertado!')
     }
 
+    function handleTextChange(text: string) {
+        setFilterSettings({ ...filterSettings, name: text })
+    }
+
+    function handlePressFilterNewProducts() {
+        setFilterSettings({ ...filterSettings, is_new: true })
+    }
+
+    function handlePressFilterUsedProducts() {
+        setFilterSettings({ ...filterSettings, is_new: false })
+    }
+
+    function handleAcceptTrade() {
+        const oldState = filterSettings.accept_trade
+        setFilterSettings({ ...filterSettings, accept_trade: !oldState })
+    }
+
+    function handlePaymentMethods(data: string[]) {
+        const newPaymentMethods = data
+        setPaymentMethods(newPaymentMethods)
+        setFilterSettings({ ...filterSettings, payment_methods: newPaymentMethods })
+    }
+
+    console.log(filterSettings)
+
     return (
         <FormControl isInvalid={invalid}>
 
-            <Controller 
-                control={control}
-                name="name"
-                // rules={{required: 'Informe o e-mail.'}}
-                render={({field: {onChange}}) => (
                     <NativeBaseInput 
                         bg='gray.700'
                         h={12}
@@ -55,6 +84,7 @@ export function FilterInput({ errorMessage = null, isInvalid, ...rest}: Props) {
                         fontSize='md'
                         color='gray.200'
                         fontFamily='body'
+                        onChangeText={handleTextChange}
 
                         placeholderTextColor='gray.400'
                         isInvalid={invalid}
@@ -76,8 +106,6 @@ export function FilterInput({ errorMessage = null, isInvalid, ...rest}: Props) {
                             </HStack>
                             }
                     />
-                )}
-            />
          
             <FormControl.ErrorMessage _text={{color: 'red.500'}}>
                 {errorMessage}
@@ -94,44 +122,66 @@ export function FilterInput({ errorMessage = null, isInvalid, ...rest}: Props) {
                     <FormControl>
                     <Heading fontFamily='heading' fontSize='sm' color='gray.200' mb={3}>Condição</Heading>
                     <HStack pb={6}>
-                        <Button 
+                        <Button
+                            variant={filterSettings.is_new ? 'blue' : 'gray-light'}
+                            onPress={handlePressFilterNewProducts} 
                             title="NOVO"
-                            w='76px'
+                            minW='76px'
+                            w='auto'
                             h='28px'
                             borderRadius={999}
                             p={0}
-                        />
+                            px={2}
+                            mr={2}
+                            iconPosition="right"
+                        >
+                            {filterSettings.is_new && <XCircle size={16} color={theme.colors.gray[600]} />}
+                        </Button>
                         <Button 
+                            variant={!filterSettings.is_new ? 'blue' : 'gray-light'}
+                            onPress={handlePressFilterUsedProducts}
                             title="USADO"
-                            w='76px'
+                            minW='76px'
+                            w='auto'
                             h='28px'
                             borderRadius={999}
                             p={0}
-                        />
+                            px={2}
+                            iconPosition="right"
+                        >
+                            {!filterSettings.is_new && <XCircle size={16} color={theme.colors.gray[600]} />}
+                        </Button>
                     </HStack>
                     <Heading fontFamily='heading' fontSize='sm' color='gray.200' mb={3}>Aceita troca?</Heading>
-                    <Switch size="sm" color='gray.50' />
+                    <Switch 
+                        size="sm" 
+                        onChange={handleAcceptTrade}
+                        offTrackColor="gray.500" 
+                        onTrackColor="blue.200" 
+                        onThumbColor="gray.700"
+                        offThumbColor="gray.700"
+                    />
                     <Heading fontFamily='heading' fontSize='sm' color='gray.200' mb={3} mt={6}>Meios de pagamento aceitos</Heading>
 
-                    
-                            <Checkbox.Group colorScheme="lightBlue" defaultValue={[]} accessibilityLabel="pick an item" onChange={e => console.log(e)}>
-                                <Checkbox value="boleto" my="1">
-                                    Boleto                                   
-                                </Checkbox>
-                                <Checkbox value="Writing" my="1">
-                                    Pix
-                                </Checkbox>
-                                <Checkbox value="Gardening" my="1">
-                                    Dinheiro
-                                </Checkbox>
-                                <Checkbox value="Cooking" my="1">
-                                    Cartão de Crédito
-                                </Checkbox>
-                                <Checkbox value="Cooking" my="1">
-                                    Depósito Bancário
-                                </Checkbox>
-                            </Checkbox.Group>
-                     
+                    <Checkbox.Group accessibilityLabel="choose values" onChange={handlePaymentMethods} value={paymentMethods}>
+                        <Checkbox value="boleto" my={1} _checked={{bgColor: 'blue.200', borderColor: 'blue.200'}}>
+                            Boleto
+                        </Checkbox>
+                        <Checkbox value="pix" my={1} _checked={{bgColor: 'blue.200', borderColor: 'blue.200'}}>
+                            Pix
+                        </Checkbox>
+                        <Checkbox value="cash" my={1} _checked={{bgColor: 'blue.200', borderColor: 'blue.200'}}>
+                            Dinheiro
+                        </Checkbox>
+                        <Checkbox value="card" my={1} _checked={{bgColor: 'blue.200', borderColor: 'blue.200'}}>
+                            Cartão de Crédito
+                        </Checkbox>
+                        <Checkbox value="deposit" my={1} _checked={{bgColor: 'blue.200', borderColor: 'blue.200'}}>
+                            Depósito Bancário
+                        </Checkbox>
+                        
+                    </Checkbox.Group>
+
                     <HStack mt={8} justifyContent='space-between'>
                         <Button 
                             variant="gray-light"
