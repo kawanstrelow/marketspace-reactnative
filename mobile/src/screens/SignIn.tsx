@@ -1,4 +1,4 @@
-import { ScrollView, VStack, useTheme, Text, Image, Center } from 'native-base'
+import { ScrollView, VStack, useTheme, Text, Image, Center, useToast, Pressable } from 'native-base'
 import { useNavigation } from '@react-navigation/native'
 
 import { Controller, useForm } from 'react-hook-form'
@@ -9,7 +9,10 @@ import { Input } from '@components/Input'
 import { Button } from '@components/Button'
 
 import { AuthNavigationRoutesProps } from '@routes/auth.routes'
-import { Plus } from 'phosphor-react-native'
+import { Eye, Plus } from 'phosphor-react-native'
+import { useAuth } from '@hooks/useAuth'
+import { AppError } from '@utils/AppError'
+import { useState } from 'react'
 
 type FormData = {
     email: string;
@@ -18,12 +21,40 @@ type FormData = {
 
 export function SignIn() {
 
+    const [hidePassword, setHidePassword] = useState(true)
+
     const navigation = useNavigation<AuthNavigationRoutesProps>()
-
     const { control, handleSubmit, formState: { errors} } = useForm<FormData>()
+    const { signIn } = useAuth()
+    const toast = useToast()
+    const { colors } = useTheme()
 
+    async function handleSignIn({ email, password}: FormData) {
+
+        try {
+
+            await signIn(email, password)
+
+        } catch (error) {
+            
+            const isAppError = error instanceof AppError
+            const title = isAppError ? error.message : 'Não foi possível entrar. Tente novamente mais tarde.'
+
+            toast.show({
+                title, 
+                placement: 'top',
+                bgColor: 'red.500'
+            })
+        }   
+
+    }
+    
     function handleNewAccount() {
         navigation.navigate('SignUp')
+    }
+
+    function handlePasswordShow() {
+        setHidePassword(!hidePassword)
     }
 
     return (
@@ -83,11 +114,15 @@ export function SignIn() {
                             render={({field: {onChange}}) => (
                                 <Input
                                     placeholder='Senha'
-                                    secureTextEntry
+                                    secureTextEntry={hidePassword}
                                     autoCapitalize='none'
                                     onChangeText={onChange}
                                     errorMessage={errors.email?.message}
-                                    
+                                    InputRightElement={(
+                                        <Pressable mr={4} onPress={handlePasswordShow}>
+                                            <Eye size={20} color={colors.gray[300]} />
+                                        </Pressable>
+                                    )}
                                 />
                             )}
                         />
@@ -97,6 +132,7 @@ export function SignIn() {
                         mt={8}
                         title='Entrar'
                         variant='blue'
+                        onPress={handleSubmit(handleSignIn)}
                     />
 
                 </Center>

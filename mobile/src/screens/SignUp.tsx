@@ -1,5 +1,5 @@
 import { Controller, useForm } from 'react-hook-form'
-import { ScrollView, VStack, useTheme, Text, Image, Center, Heading } from 'native-base'
+import { ScrollView, VStack, useTheme, Text, Image, Center, Heading, Pressable } from 'native-base'
 import { useNavigation } from '@react-navigation/native'
 
 import LogoImgSignUp from '@assets/logosignup.png'
@@ -9,7 +9,8 @@ import { Input } from '@components/Input'
 import { Button } from '@components/Button'
 
 import { AuthNavigationRoutesProps } from '@routes/auth.routes'
-import { Plus } from 'phosphor-react-native'
+import { Eye, Plus } from 'phosphor-react-native'
+import { useState } from 'react'
 
 type FormData = {
     name: string;
@@ -21,14 +22,25 @@ type FormData = {
 
 export function SignUp() {
 
-    const theme = useTheme()
+    const [hidePassword, setHidePassword] = useState(true)
+    const [hideConfirmPassword, setHideConfirmPassword] = useState(true)
 
+    const theme = useTheme()
+    const { colors } = useTheme()
     const navigation = useNavigation<AuthNavigationRoutesProps>()
 
     const { control, handleSubmit, formState: { errors} } = useForm<FormData>()
 
     function handleAlreadyHaveAnAccount() {
         navigation.navigate('SignIn')
+    }
+
+    function handlePasswordShow() {
+        setHidePassword(!hidePassword)
+    }
+
+    function handlePasswordConfirmShow() {
+        setHideConfirmPassword(!hideConfirmPassword)
     }
 
     return (
@@ -125,11 +137,15 @@ export function SignUp() {
                             render={({field: {onChange}}) => (
                                 <Input
                                     placeholder='Senha'
-                                    secureTextEntry
+                                    secureTextEntry={hidePassword}
                                     autoCapitalize='none'
                                     onChangeText={onChange}
                                     errorMessage={errors.email?.message}
-                                    
+                                    InputRightElement={(
+                                        <Pressable mr={4} onPress={handlePasswordShow}>
+                                            <Eye size={20} color={colors.gray[300]} />
+                                        </Pressable>
+                                    )}
                                 />
                             )}
                         />
@@ -143,11 +159,15 @@ export function SignUp() {
                             render={({field: {onChange}}) => (
                                 <Input
                                     placeholder='Confirmar senha'
-                                    secureTextEntry
+                                    secureTextEntry={hideConfirmPassword}
                                     autoCapitalize='none'
                                     onChangeText={onChange}
                                     errorMessage={errors.confirm_password?.message}
-                                    
+                                    InputRightElement={(
+                                        <Pressable mr={4} onPress={handlePasswordConfirmShow}>
+                                            <Eye size={20} color={colors.gray[300]} />
+                                        </Pressable>
+                                    )}
                                 />
                             )}
                         />

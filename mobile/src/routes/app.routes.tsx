@@ -1,6 +1,6 @@
 import { Platform } from "react-native";
 import { createBottomTabNavigator, BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
-import { View, Text, useTheme, Icon } from "native-base";
+import { View, Text, useTheme, Icon, Pressable } from "native-base";
 
 import { House, Tag, SignOut } from 'phosphor-react-native';
 
@@ -10,6 +10,8 @@ import Product from "@screens/Product";
 import CreateAd from "@screens/CreateAd";
 import { ProductDTO } from "@dtos/ProductDTO";
 import CreateAdPreview from "@screens/CreateAdPreview";
+import { SignIn } from "@screens/SignIn";
+import { useAuth } from "@hooks/useAuth";
 
 type AppRoutes = {
     Home: undefined;
@@ -25,9 +27,14 @@ export type AppNavigatorRoutesProps = BottomTabNavigationProp<AppRoutes>;
 const { Navigator, Screen } = createBottomTabNavigator<AppRoutes>();
 
 export function AppRoutes() { 
+
+    const LogoutComponent = () => {
+        return null
+    }
     
     const { sizes, colors } = useTheme()
     const iconSize = sizes[6]
+    const { signOut } = useAuth()
 
     return (
         <Navigator screenOptions={{
@@ -74,11 +81,15 @@ export function AppRoutes() {
 
             <Screen 
                 name='SignOut'
-                component={Home}
+                component={LogoutComponent}
                 options={{
                     tabBarIcon: ({ color }) => (
-                        <SignOut color={color} weight="regular" size={24}/>
-                    )
+                        <Pressable onPress={signOut}>
+                            <SignOut color={color} weight="regular" size={24}/>
+                        </Pressable>
+                        
+                    ),
+                    
                 }}
             />
 
